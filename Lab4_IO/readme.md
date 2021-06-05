@@ -19,7 +19,7 @@ The system will have two inputs and three outputs. The inputs are switches calle
 | Just SW2 switch is pressed |	The LED should be green |
 | Neither SW1 or SW2 is pressed |	The LED should be off |  
 
-
+![Image of Lab4 Circuit](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab4_IO/Lab4circuit2.jpg)
 
 We assume you know some programming. However, for those whose C is rusty, we created a C reference guide, [Embedded Software in C for an ARM Cortex M](http://users.ece.utexas.edu/~valvano/embed/toc1.htm). This web site is not meant to teach you how to program, rather it is a quick way to look up C syntax.  
 
