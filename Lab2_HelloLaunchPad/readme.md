@@ -1,4 +1,4 @@
-## About Lab 2  
+# About Lab 2  
 
 ## Preparation
 
