@@ -49,20 +49,23 @@ void EnableInterrupts(void);
 // 3. Subroutines Section
 // MAIN: Mandatory for a C Program to be executable
 int main(void){    
-  TExaS_Init(SW_PIN_PF40,LED_PIN_PF321); 
+
+	TExaS_Init(SW_PIN_PF40,LED_PIN_PF321); 
   // TExaS_Init initializes the real board grader for lab 4
   PortF_Init();        // Call initialization of port PF4, PF3, PF2, PF1, PF0    
   EnableInterrupts();  // The grader uses interrupts
   while(1){
     SW1 = GPIO_PORTF_DATA_R&0x10;     // read PF4 into SW1
     SW2 = GPIO_PORTF_DATA_R&0x01;     // read PF0 into SW2
-    if(!SW1&&!SW2){                   // both pressed
+		SW1 = !SW1;												// translate negative logic of switch...
+		SW2 = !SW2;												// into more intuitive positive logic
+    if(SW1&&SW2){                		  // both pressed
       GPIO_PORTF_DATA_R = 0x04;       // LED is blue
     } else{                           
-      if(!SW1&&(SW2)){                // just SW1 pressed
+      if(SW1&&(!SW2)){                // just SW1 pressed
         GPIO_PORTF_DATA_R = 0x02;     // LED is red
       } else{                        
-        if((SW1)&&!SW2){              // just SW2 pressed
+        if((!SW1)&&(SW2)){             // just SW2 pressed
           GPIO_PORTF_DATA_R = 0x08;   // LED is green
         }else{                        // neither switch
           GPIO_PORTF_DATA_R = 0x00;   // LED is off
