@@ -46,13 +46,13 @@ int main(void){ unsigned long volatile delay;
   EnableInterrupts();           				// enable interrupts for the grader
   while(1){
     // body goes here
-		input = GPIO_PORTF_DATA_R&0x10;				// read PF4 in to SW
+		input = GPIO_PORTF_DATA_R&0x10;				// read PF4 in to input
 		if(input){														// switch is unpressed
 			GPIO_PORTF_DATA_R |= 0x04;					// LED is blue
 		}
 		else{																	// switch is pressed
-			GPIO_PORTF_DATA_R ^= 0x04;
-			Delay(100);
+			GPIO_PORTF_DATA_R ^= 0x04;					// toggle LED
+			Delay(100);													// wait 100ms before returning to loop
 		}
   }
 }
