@@ -2,7 +2,7 @@
 
 ## Preparation
 
-You will need a LaunchPad and access to the microcontroller data sheet TM4C123_LaunchPadUsersManual.pdf.  
+You will need a LaunchPad and access to the microcontroller data sheet [TM4C123_LaunchPadUsersManual.pdf](https://www.ti.com/lit/ds/spms376e/spms376e.pdf).  
 
 ## Starter project
 
@@ -23,4 +23,6 @@ The system has one input switch and one output LED. Figure 6.1 shows the system 
 4) If the switch is pressed (PF4 is 0), then toggle the LED once, else turn the LED ON.
 5) Repeat steps 3 and 4 over and over.
 
-Figure 6.1. Example screenshot in simulation mode. Notice the output toggles at about 86ms when switch is pressed (PF4=0) and the output is high when the switch is not pressed. (the 86ms time in the simulator will result in 100 ms on the real board, because of a bug in the Keil uVision).
+![Example screenshot in simulation mode](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab6_BranchingFunctionsDelays/Lab6image001.jpg)
+
+*Figure 6.1. Example screenshot in simulation mode. Notice the output toggles at about 86ms when switch is pressed (PF4=0) and the output is high when the switch is not pressed. (the 86ms time in the simulator will result in 100 ms on the real board, because of a bug in the Keil uVision).*
