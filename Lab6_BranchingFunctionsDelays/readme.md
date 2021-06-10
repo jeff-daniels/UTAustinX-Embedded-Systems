@@ -25,4 +25,9 @@ The system has one input switch and one output LED. Figure 6.1 shows the system 
 
 ![Example screenshot in simulation mode](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab6_BranchingFunctionsDelays/Lab6image001.jpg)
 
-*Figure 6.1. Example screenshot in simulation mode. Notice the output toggles at about 86ms when switch is pressed (PF4=0) and the output is high when the switch is not pressed. (the 86ms time in the simulator will result in 100 ms on the real board, because of a bug in the Keil uVision).*
+*Figure 6.1. Example screenshot in simulation mode. Notice the output toggles at about 86ms when switch is pressed (PF4=0) and the output is high when the switch is not pressed. (the 86ms time in the simulator will result in 100 ms on the real board, because of a bug in the Keil uVision).*  
+
+## Bugs found  
+Debugger closes when running on a real board.  Per the instructions [here](http://users.ece.utexas.edu/~valvano/Volume1/Window8KeilDebuggerFix.htm), any file in the directory of the Registry Editor (windows key, regedit):  
+`Computer\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers`  
+ that is not `(default)` should be deleted
