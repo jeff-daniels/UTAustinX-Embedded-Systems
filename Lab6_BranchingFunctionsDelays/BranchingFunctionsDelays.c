@@ -25,16 +25,61 @@
 #define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
 #define SYSCTL_RCGC2_GPIOF      0x00000020  // port F Clock Gating Control
 
+// declarations
+// Global Variables
+unsigned long input;		// input from PF4
+unsigned long output;		// output to PF2
+
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
+// Function Prototypes
+void PortF_Init(void);
+void Delay(unsigned long);
+
 int main(void){ unsigned long volatile delay;
   TExaS_Init(SW_PIN_PF4, LED_PIN_PF2);  // activate grader and set system clock to 80 MHz
   // initialization goes here
+	PortF_Init();													// call initialization of port PF4, PF2
 
-  EnableInterrupts();           // enable interrupts for the grader
+  EnableInterrupts();           				// enable interrupts for the grader
   while(1){
     // body goes here
+		input = GPIO_PORTF_DATA_R&0x10;				// read PF4 in to SW
+		if(input){														// switch is unpressed
+			GPIO_PORTF_DATA_R |= 0x04;					// LED is blue
+		}
+		else{																	// switch is pressed
+			GPIO_PORTF_DATA_R ^= 0x04;
+			Delay(100);
+		}
   }
 }
+
+void PortF_Init(void){
+	volatile unsigned long delay;
+	// TODO: not sure if I need these lines
+	SYSCTL_RCGC2_R |= 0x00000020;     // 1) F clock
+  delay = SYSCTL_RCGC2_R;           // delay  
+	GPIO_PORTF_AMSEL_R &= ~0x14;			// disable analog on PF4, PF2
+	GPIO_PORTF_PCTL_R &= ~0x14;				// GPIO clear bit PCTL on PF4, PF2
+	GPIO_PORTF_DIR_R &= ~0x10;				// Set PF4 as input
+	GPIO_PORTF_DIR_R |= 0x04;					// Set PF2 as output
+	GPIO_PORTF_AFSEL_R &= ~0x14;			// no alternate function on PF4, PF2
+	GPIO_PORTF_DEN_R |= 0x14;					// enable digital pins on PF4, PF2
+	GPIO_PORTF_PUR_R |= 0x10;					// enable pullup resistor on PF4
+	GPIO_PORTF_DATA_R |= 0x04;				// Set PF2 so LED is initially on
+}
+
+void Delay(unsigned long time){
+	unsigned long i;
+	while (time>0){
+		i = 13333;				// 1 ms, 6 cycles per loop
+		while(i>0){
+			i -=1;
+		}
+		time -=1;		// decrement every microsecond
+	}
+}
+
