@@ -15,12 +15,10 @@
 #define GPIO_PORTE_DATA_R       (*((volatile unsigned long *)0x400243FC))
 #define GPIO_PORTE_DIR_R        (*((volatile unsigned long *)0x40024400))
 #define GPIO_PORTE_AFSEL_R      (*((volatile unsigned long *)0x40024420))
-#define GPIO_PORTE_PUR_R        (*((volatile unsigned long *)0x40024510))
 #define GPIO_PORTE_DEN_R        (*((volatile unsigned long *)0x4002451C))
 #define GPIO_PORTE_AMSEL_R      (*((volatile unsigned long *)0x40024528))
 #define GPIO_PORTE_PCTL_R       (*((volatile unsigned long *)0x4002452C))
 #define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
-#define SYSCTL_RCGC2_GPIOE      0x00000010  // port E Clock Gating Control
 
 // ***** 2. Global Declarations Section *****
 unsigned long input;	// input from the switch
@@ -28,7 +26,7 @@ unsigned long input;	// input from the switch
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void PortE_Init(void);	// Initialize PortE
-void Delay1ms(unsigned long);	// Delay function
+void Delay1ms(unsigned long msec);	// Delay function
 // ***** 3. Subroutines Section *****
 
 // PE0, PB0, or PA2 connected to positive logic momentary switch using 10k ohm pull down resistor
@@ -59,7 +57,7 @@ int main(void){
 
 void PortE_Init(void) {volatile unsigned long delay;
 	SYSCTL_RCGC2_R |= 0x10;     // 1) Port E clock
-  delay = SYSCTL_RCGC2_R;           // delay  
+  delay = SYSCTL_RCGC2_R;           // wait 3-5 bus cycles
 	GPIO_PORTE_DIR_R |= 0x02;	// Set PE1 as output
 	GPIO_PORTE_DIR_R &= ~0x01; // Set PE0 as input
 	GPIO_PORTE_AFSEL_R &= ~0x03;			// no alternate function on PE0, PE1
