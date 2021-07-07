@@ -83,36 +83,38 @@ void Delay1ms(unsigned long msec){
 }
 }
 
-int main(void){  unsigned long i,last,now;
+int main(void){  unsigned long i,last,now,switched;
   TExaS_Init(SW_PIN_PF40, LED_PIN_PF1);  // activate grader and set system clock to 16 MHz
   PortF_Init();   // initialize PF1 to output
   SysTick_Init(); // initialize SysTick, runs at 16 MHz
   i = 0;          // array index
   last = NVIC_ST_CURRENT_R;
+	switched = 0x00;	// switch status, initially at zero
   EnableInterrupts();           // enable interrupts for the grader
   while(1){
 		SW1 = GPIO_PORTF_DATA_R&0x10;	// PF4
 		SW2 = GPIO_PORTF_DATA_R&0x01;	// PF0
-    if((SW1==0)||(SW2==0)){	// if either switch is pressed
+
+		if((SW1==0)||(SW2==0)){			// if either switch is pressed, toggle the led
 			Led = GPIO_PORTF_DATA_R;   // read previous
 			Led = Led^0x02;            // toggle red LED
 			GPIO_PORTF_DATA_R = Led;   // output 
 			Delay1ms(12);
 		}
 		else{
-			GPIO_PORTF_DATA_R &= ~0x02;	// LED is off if neither switch pressed
+				GPIO_PORTF_DATA_R &= ~0x02;	// LED is off if neither switch pressed
 		}
-
-    if(i<50){
-      now = NVIC_ST_CURRENT_R;
-      Time[i] = (last-now)&0x00FFFFFF;  // 24-bit time difference
-      Data[i] = GPIO_PORTF_DATA_R&0x02; // record PF1
-      last = now;
-      i++;
-    }
-    
-		
-  }
+		if(switched != (SW1|SW2)){			// switch status
+			switched = SW1|SW2;
+			if(i<50){
+				now = NVIC_ST_CURRENT_R;
+				Time[i] = (last-now)&0x00FFFFFF;  // 24-bit time difference
+				Data[i] = GPIO_PORTF_DATA_R&0x13; // record PF4, PF1, PF0
+				last = now;
+				i++;
+			}
+		}
+	}
 }
 
 
