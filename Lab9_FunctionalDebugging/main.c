@@ -97,6 +97,10 @@ int main(void){  unsigned long i,last,now;
 			Led = GPIO_PORTF_DATA_R;   // read previous
 			Led = Led^0x02;            // toggle red LED
 			GPIO_PORTF_DATA_R = Led;   // output 
+			Delay1ms(12);
+		}
+		else{
+			GPIO_PORTF_DATA_R &= ~0x02;	// LED is off if neither switch pressed
 		}
 
     if(i<50){
@@ -106,7 +110,7 @@ int main(void){  unsigned long i,last,now;
       last = now;
       i++;
     }
-    Delay1ms(6);
+    
 		
   }
 }
