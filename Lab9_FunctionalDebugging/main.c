@@ -101,11 +101,12 @@ int main(void){  unsigned long i,last,now,switched;
 			GPIO_PORTF_DATA_R = Led;   // output 
 			Delay1ms(12);
 		}
-		else{
-				GPIO_PORTF_DATA_R &= ~0x02;	// LED is off if neither switch pressed
+		else{ 
+			GPIO_PORTF_DATA_R &= ~0x02;	// LED is off if neither switch pressed
+			Led = GPIO_PORTF_DATA_R&0x2;	//
 		}
-		if(switched != (SW1|SW2)){			// switch status
-			switched = SW1|SW2;
+		if(switched != (Led|(SW1|SW2))){			// switch status
+			switched = Led|(SW1|SW2);
 			if(i<50){
 				now = NVIC_ST_CURRENT_R;
 				Time[i] = (last-now)&0x00FFFFFF;  // 24-bit time difference
