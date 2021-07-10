@@ -94,25 +94,6 @@ void PortF_Init(void){volatile unsigned long delay;
 	
 }
 
-void Port_Init(void){volatile unsigned long delay;
-	SYSCTL_RCGC2_R |= 0x12;      // 1) Activate Clock for Port B, E
-  delay = SYSCTL_RCGC2_R;      // 2) no need to unlock
-  GPIO_PORTE_AMSEL_R &= ~0x07; // 3) disable analog function on PE2-0
-  GPIO_PORTE_PCTL_R &= ~0x00000FFF; // 4) enable regular GPIO
-  GPIO_PORTE_DIR_R &= ~0x07;   // 5) inputs on PE1-0
-  GPIO_PORTE_AFSEL_R &= ~0x07; // 6) regular function on PE1-0
-  GPIO_PORTE_DEN_R |= 0x07;    // 7) enable digital on PE1-0
-	SYSCTL_RCGC2_R |= 0x02;      // 1) Activate Clock for Port B
-	delay = SYSCTL_RCGC2_R;      // 2) no need to unlock
-	GPIO_PORTB_AMSEL_R &= ~0x3F; // 3) disable analog function on PB5-0
-  GPIO_PORTB_PCTL_R &= ~0x00FFFFFF; // 4) enable regular GPIO
-  GPIO_PORTB_DIR_R |= 0x3F;    // 5) outputs on PB5-0
-  GPIO_PORTB_AFSEL_R &= ~0x3F; // 6) regular function on PB5-0
-  GPIO_PORTB_DEN_R |= 0x3F;    // 7) enable digital on PB5-0
-	
-	
-}
-
 
 int main(void){ 
   TExaS_Init(SW_PIN_PE210, LED_PIN_PB543210,ScopeOff); // activate grader and set system clock to 80 MHz
@@ -120,7 +101,6 @@ int main(void){
 	PortB_Init();	// Initialize PB5-PB0 as output
 	PortE_Init();	// Initialize PE2-PE0 as input
 //	PortF_Init();	// Initialize PF3, PF1 as output
-//	Port_Init();
 	EnableInterrupts();
 
   S = goN;  
