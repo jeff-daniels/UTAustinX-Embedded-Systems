@@ -29,7 +29,7 @@
  For more information about my classes, my research, and my books, see
  http://users.ece.utexas.edu/~valvano/
  */
-
+#include "SysTick.h"
 
 // Initialize SysTick with busy wait running at bus clock.
 #define NVIC_ST_CTRL_R      (*((volatile unsigned long *)0xE000E010))
