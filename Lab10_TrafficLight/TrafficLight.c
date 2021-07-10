@@ -1,5 +1,5 @@
 // ***** 0. Documentation Section *****
-// TableTrafficLight.c for Lab 10
+// TrafficLight.c for Lab 10
 // Runs on LM4F120/TM4C123
 // Index implementation of a Moore finite state machine to operate a traffic light.  
 // Daniel Valvano, Jonathan Valvano
@@ -29,18 +29,27 @@
 #define GPIO_PORTB_DEN_R        (*((volatile unsigned long *)0x4000551C))
 #define GPIO_PORTB_AMSEL_R      (*((volatile unsigned long *)0x40005528))
 #define GPIO_PORTB_PCTL_R       (*((volatile unsigned long *)0x4000552C))
-#define GPIO_PORTE_IN           (*((volatile unsigned long *)0x4002401C)) // bits 2-0
-#define SENSOR                  (*((volatile unsigned long *)0x4002401C))
 
+#define SENSOR                  (*((volatile unsigned long *)0x4002401C))
+#define GPIO_PORTE_IN           (*((volatile unsigned long *)0x4002401C)) // bits 2-0
 #define GPIO_PORTE_DIR_R        (*((volatile unsigned long *)0x40024400))
 #define GPIO_PORTE_AFSEL_R      (*((volatile unsigned long *)0x40024420))
 #define GPIO_PORTE_DEN_R        (*((volatile unsigned long *)0x4002451C))
 #define GPIO_PORTE_AMSEL_R      (*((volatile unsigned long *)0x40024528))
 #define GPIO_PORTE_PCTL_R       (*((volatile unsigned long *)0x4002452C))
+
+#define WALK										(*((volatile unsigned long *)0x40025028))
+#define GPIO_PORTF_OUT					(*((volatile unsigned long *)0x40025028))	// bits 3, 1
+#define GPIO_PORTF_DIR_R        (*((volatile unsigned long *)0x40025400))
+#define GPIO_PORTF_AFSEL_R      (*((volatile unsigned long *)0x40025420))
+#define GPIO_PORTF_DEN_R        (*((volatile unsigned long *)0x4002551C))
+#define GPIO_PORTF_AMSEL_R      (*((volatile unsigned long *)0x40025528))
+#define GPIO_PORTF_PCTL_R       (*((volatile unsigned long *)0x4002552C))
+
 #define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
 #define SYSCTL_RCGC2_GPIOE      0x00000010  // port E Clock Gating Control
 #define SYSCTL_RCGC2_GPIOB      0x00000002  // port B Clock Gating Control
-
+#define SYSCTL_RCGC2_GPIOF      0x00000020  // port F Clock Gating Control
 
 // ***** 2. Global Declarations Section *****
 // Linked data structure
@@ -91,7 +100,13 @@ void PortE_Init(void){volatile unsigned long delay;
 }
 
 void PortF_Init(void){volatile unsigned long delay;
-	
+	SYSCTL_RCGC2_R |= 0x20;  			    // 1) activate clock for Port F
+  delay = SYSCTL_RCGC2_R;           // 2) no need to unlock
+  GPIO_PORTF_AMSEL_R &= ~0x0A;      // 3) disable analog on PF3, PF1
+  GPIO_PORTF_PCTL_R &= ~0x0000F0F0; // 4) GPIO clear bit PCTL on PF3, PF1
+  GPIO_PORTF_DIR_R |= 0x0A;         // 5) Set PF3, PF1 as output
+  GPIO_PORTF_AFSEL_R &= ~0x0A;      // 6) disable alt funct on PF3, PF1
+  GPIO_PORTF_DEN_R |= 0x0A;         // 7) enable digital PF3, PF1
 }
 
 
@@ -100,7 +115,7 @@ int main(void){
   SysTick_Init();   // Program 10.2
 	PortB_Init();	// Initialize PB5-PB0 as output
 	PortE_Init();	// Initialize PE2-PE0 as input
-//	PortF_Init();	// Initialize PF3, PF1 as output
+	PortF_Init();	// Initialize PF3, PF1 as output
 	EnableInterrupts();
 
   S = goN;  
@@ -110,6 +125,13 @@ int main(void){
     SysTick_Wait10ms(FSM[S].Time);
     Input = SENSOR;     // read sensors
     S = FSM[S].Next[Input];  
+		if (SENSOR&0x04){
+			WALK = 0x02;
+		}
+			else{
+			WALK = 0x08;
+		}
+		
   }
 }
 
