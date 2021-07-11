@@ -707,10 +707,10 @@ Image component sizes
        692        632          0          0       1024        868   startup.o
         70          6          0          0          0       1177   systick.o
       2896        354      14264         68        628      19306   texas.o
-       520        104        440          8          0       5256   trafficlight.o
+       520        104        440          8          0       5248   trafficlight.o
 
     ----------------------------------------------------------------------
-      4180       1096      14736         76       1656      26607   Object Totals
+      4180       1096      14736         76       1656      26599   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          0          4          0   (incl. Padding)
 
@@ -759,8 +759,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      4452       1112      14736         76       1756      26091   Grand Totals
-      4452       1112      14736         76       1756      26091   ELF Image Totals
+      4452       1112      14736         76       1756      26083   Grand Totals
+      4452       1112      14736         76       1756      26083   ELF Image Totals
       4452       1112      14736         76          0          0   ROM Totals
 
 ==============================================================================
