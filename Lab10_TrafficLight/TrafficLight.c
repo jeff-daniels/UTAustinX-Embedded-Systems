@@ -59,30 +59,28 @@ struct State {
   unsigned long Time;  
   unsigned long Next[8];}; 
 typedef const struct State STyp;
-#define goS   0
-#define waitS 1
-#define goW   2
-#define waitW 3
-#define waitWS 4
-#define walk 5
-#define flashDontWalk1 6
-#define flashWalk1 7
-#define flashDontWalk2 8
-#define flashWalk2 9
-#define steady 60
-#define change 30
+#define goW   0
+#define waitW	1
+#define goS   2
+#define waitS 3
+#define walk 4
+#define flashDontWalk1 5
+#define flashWalk1 6
+#define flashDontWalk2 7
+#define flashWalk2 8
+#define steady 100
+#define change 50
 
 STyp FSM[10]={
-	{0x21,0x02, steady, {goS, waitS, goS, waitS, waitWS, waitWS, waitWS, waitS}},	// goS
-	{0x22,0x02, change, {goW, goW, goW, goW, waitWS, waitWS, waitWS, goW}},	// waitS
-	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitWS, waitWS, waitWS, waitW}}, 	// goW
-	{0x14,0x02, change, {goS, goS, goS, goS, waitWS, waitWS, waitWS, walk}}, 	// waitW
-	{0x12,0x02, change, {walk, walk, walk, walk, walk, walk, walk, walk}}, 	// waitWS
-	{0x24,0x08, steady, {flashDontWalk1, flashDontWalk1, flashDontWalk1, flashDontWalk1, walk, walk, walk, flashDontWalk1}}, 	// walk
+	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitW, waitW, waitW, waitW}}, 	// goW
+	{0x14,0x02, change, {goW, goW, goS, goS, walk, goW, goS, walk}}, 	// waitW
+	{0x21,0x02, steady, {waitS, waitS, goS, waitS, waitS, waitS, waitS, waitS}},	// goS
+	{0x22,0x02, change, {goW, goW, goS, goW, walk, walk, walk, goW}},	// waitS
+	{0x24,0x08, steady, {flashDontWalk1, flashDontWalk1, flashDontWalk1, flashDontWalk1, walk, flashDontWalk1, flashDontWalk1, flashDontWalk1}}, 	// walk
 	{0x24,0x02, change, {flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1}}, 	// flashDontWalk1
 	{0x24,0x08, change, {flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2}}, 	// flashWalk1
 	{0x24,0x02, change, {flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2}}, 	// flashDontWalk2
-	{0x24,0x08, change, {goS, goW, goS, goS, goS, goW, goS, goS }} 	// flashWalk2
+	{0x24,0x08, change, {goW, goW, goW, goW, walk, goW, goS, goW }} 	// flashWalk2
 };
 unsigned long S;  // index to the current state 
 unsigned long Input; 
@@ -135,7 +133,7 @@ int main(void){
 	PortF_Init();	// Initialize PF3, PF1 as output
 	EnableInterrupts();
 
-  S = goS;  
+  S = goW;  
 
   while(1){
     LIGHT = FSM[S].TrafficSignal;  // set traffic signal
