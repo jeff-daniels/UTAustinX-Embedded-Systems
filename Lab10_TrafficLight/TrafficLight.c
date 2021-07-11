@@ -73,12 +73,12 @@ typedef const struct State STyp;
 #define change 30
 
 STyp FSM[10]={
-	{0x21,0x02, steady, {goS, waitS, goS, waitS, waitWS, waitWS, waitWS, waitWS}},	// goS
-	{0x22,0x02, change, {goW, goW, goW, goW, waitWS, waitWS, waitWS, waitWS}},	// waitS
-	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitWS, waitWS, waitWS, waitWS}}, 	// goW
-	{0x14,0x02, change, {goS, goS, goS, goS, waitWS, waitWS, waitWS, waitWS}}, 	// waitW
+	{0x21,0x02, steady, {goS, waitS, goS, waitS, waitWS, waitWS, waitWS, waitS}},	// goS
+	{0x22,0x02, change, {goW, goW, goW, goW, waitWS, waitWS, waitWS, goW}},	// waitS
+	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitWS, waitWS, waitWS, waitW}}, 	// goW
+	{0x14,0x02, change, {goS, goS, goS, goS, waitWS, waitWS, waitWS, walk}}, 	// waitW
 	{0x12,0x02, change, {walk, walk, walk, walk, walk, walk, walk, walk}}, 	// waitWS
-	{0x24,0x08, steady, {flashDontWalk1, flashDontWalk1, flashDontWalk1, flashDontWalk1, walk, walk, walk, walk}}, 	// walk
+	{0x24,0x08, steady, {flashDontWalk1, flashDontWalk1, flashDontWalk1, flashDontWalk1, walk, walk, walk, flashDontWalk1}}, 	// walk
 	{0x24,0x02, change, {flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1}}, 	// flashDontWalk1
 	{0x24,0x08, change, {flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2}}, 	// flashWalk1
 	{0x24,0x02, change, {flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2}}, 	// flashDontWalk2
