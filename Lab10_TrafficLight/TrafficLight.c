@@ -19,46 +19,16 @@
 
 // ***** 1. Pre-processor Directives Section *****
 #include "TExaS.h"
-#include "tm4c123gh6pm.h"
-#include "SysTick.h"
+#include "tm4c123gh6pm.h"		// defines most of the port register addresses
+#include "SysTick.h"		
 
-#define LIGHT                   (*((volatile unsigned long *)0x400050FC))
-#define GPIO_PORTB_OUT          (*((volatile unsigned long *)0x400050FC)) // bits 5-0
-#define GPIO_PORTB_DIR_R        (*((volatile unsigned long *)0x40005400))
-#define GPIO_PORTB_AFSEL_R      (*((volatile unsigned long *)0x40005420))
-#define GPIO_PORTB_DEN_R        (*((volatile unsigned long *)0x4000551C))
-#define GPIO_PORTB_AMSEL_R      (*((volatile unsigned long *)0x40005528))
-#define GPIO_PORTB_PCTL_R       (*((volatile unsigned long *)0x4000552C))
 
-#define SENSOR                  (*((volatile unsigned long *)0x4002401C))
-#define GPIO_PORTE_IN           (*((volatile unsigned long *)0x4002401C)) // bits 2-0
-#define GPIO_PORTE_DIR_R        (*((volatile unsigned long *)0x40024400))
-#define GPIO_PORTE_AFSEL_R      (*((volatile unsigned long *)0x40024420))
-#define GPIO_PORTE_DEN_R        (*((volatile unsigned long *)0x4002451C))
-#define GPIO_PORTE_AMSEL_R      (*((volatile unsigned long *)0x40024528))
-#define GPIO_PORTE_PCTL_R       (*((volatile unsigned long *)0x4002452C))
-
-#define WALK										(*((volatile unsigned long *)0x40025028))
-#define GPIO_PORTF_OUT					(*((volatile unsigned long *)0x40025028))	// bits 3, 1
-#define GPIO_PORTF_DIR_R        (*((volatile unsigned long *)0x40025400))
-#define GPIO_PORTF_AFSEL_R      (*((volatile unsigned long *)0x40025420))
-#define GPIO_PORTF_DEN_R        (*((volatile unsigned long *)0x4002551C))
-#define GPIO_PORTF_AMSEL_R      (*((volatile unsigned long *)0x40025528))
-#define GPIO_PORTF_PCTL_R       (*((volatile unsigned long *)0x4002552C))
-
-#define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
-#define SYSCTL_RCGC2_GPIOE      0x00000010  // port E Clock Gating Control
-#define SYSCTL_RCGC2_GPIOB      0x00000002  // port B Clock Gating Control
-#define SYSCTL_RCGC2_GPIOF      0x00000020  // port F Clock Gating Control
 
 // ***** 2. Global Declarations Section *****
-// Linked data structure
-struct State {
-  unsigned long TrafficSignal;
-	unsigned long WalkSignal;
-  unsigned long Time;  
-  unsigned long Next[8];}; 
-typedef const struct State STyp;
+#define LIGHT                   (*((volatile unsigned long *)0x400050FC))
+#define SENSOR                  (*((volatile unsigned long *)0x4002401C))
+#define WALK										(*((volatile unsigned long *)0x40025028))
+	
 #define goW   0
 #define waitW	1
 #define goS   2
@@ -71,6 +41,15 @@ typedef const struct State STyp;
 #define steady 100
 #define change 50
 
+// Linked data structure
+struct State {
+  unsigned long TrafficSignal;
+	unsigned long WalkSignal;
+  unsigned long Time;  
+  unsigned long Next[8];}; 
+typedef const struct State STyp;
+
+// Data Transition Table for operating the lights 
 STyp FSM[10]={
 	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitW, waitW, waitW, waitW}}, 	// goW
 	{0x14,0x02, change, {goW, goW, goS, goS, walk, goW, goS, goS}}, 	// waitW
@@ -133,15 +112,14 @@ int main(void){
 	PortF_Init();	// Initialize PF3, PF1 as output
 	EnableInterrupts();
 
-  S = goW;  
+	S = goW;  // initial state and typically a default state
 
-  while(1){
-    LIGHT = FSM[S].TrafficSignal;  // set traffic signal
+	while(1){
+		LIGHT = FSM[S].TrafficSignal;  // set traffic signal
 		WALK = FSM[S].WalkSignal;				// set walk signal
-    SysTick_Wait10ms(FSM[S].Time);
-    Input = SENSOR;     // read sensors
-    S = FSM[S].Next[Input];  
+		SysTick_Wait10ms(FSM[S].Time);	// delay
+		S = FSM[S].Next[SENSOR];  // read sensors to determine next state
 		
-  }
+	}
 }
 
