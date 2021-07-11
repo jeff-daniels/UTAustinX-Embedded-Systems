@@ -68,8 +68,8 @@ typedef const struct State STyp;
 #define flashWalk1 6
 #define flashDontWalk2 7
 #define flashWalk2 8
-#define steady 50
-#define change 10
+#define steady 100
+#define change 50
 
 STyp FSM[10]={
 	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitW, waitW, waitW, waitW}}, 	// goW
