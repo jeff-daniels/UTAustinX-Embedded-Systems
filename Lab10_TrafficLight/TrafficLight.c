@@ -54,19 +54,36 @@
 // ***** 2. Global Declarations Section *****
 // Linked data structure
 struct State {
-  unsigned long Out; 
+  unsigned long TrafficSignal;
+	unsigned long WalkSignal;
   unsigned long Time;  
-  unsigned long Next[4];}; 
+  unsigned long Next[8];}; 
 typedef const struct State STyp;
-#define goN   0
-#define waitN 1
-#define goE   2
-#define waitE 3
-STyp FSM[4]={
- {0x21,30,{goN,waitN,goN,waitN}}, 
- {0x22, 50,{goE,goE,goE,goE}},
- {0x0C,30,{goE,goE,waitE,waitE}},
- {0x14, 50,{goN,goN,goN,goN}}};
+#define goS   0
+#define waitS 1
+#define goW   2
+#define waitW 3
+#define waitWS 4
+#define walk 5
+#define flashDontWalk1 6
+#define flashWalk1 7
+#define flashDontWalk2 8
+#define flashWalk2 9
+#define steady 60
+#define change 30
+
+STyp FSM[10]={
+	{0x21,0x02, steady, {goS, waitS, goS, waitS, waitWS, waitWS, waitWS, waitWS}},	// goS
+	{0x22,0x02, change, {goW, goW, goW, goW, waitWS, waitWS, waitWS, waitWS}},	// waitS
+	{0x0C,0x02, steady, {goW, goW, waitW, waitW, waitWS, waitWS, waitWS, waitWS}}, 	// goW
+	{0x14,0x02, change, {goS, goS, goS, goS, waitWS, waitWS, waitWS, waitWS}}, 	// waitW
+	{0x12,0x02, change, {walk, walk, walk, walk, walk, walk, walk, walk}}, 	// waitWS
+	{0x24,0x08, steady, {flashDontWalk1, flashDontWalk1, flashDontWalk1, flashDontWalk1, walk, walk, walk, walk}}, 	// walk
+	{0x24,0x02, change, {flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1, flashWalk1}}, 	// flashDontWalk1
+	{0x24,0x08, change, {flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2, flashDontWalk2}}, 	// flashWalk1
+	{0x24,0x02, change, {flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2, flashWalk2}}, 	// flashDontWalk2
+	{0x24,0x08, change, {goS, goW, goS, goS, goS, goW, goS, goS }} 	// flashWalk2
+};
 unsigned long S;  // index to the current state 
 unsigned long Input; 
 
@@ -118,19 +135,14 @@ int main(void){
 	PortF_Init();	// Initialize PF3, PF1 as output
 	EnableInterrupts();
 
-  S = goN;  
+  S = goS;  
 
   while(1){
-    LIGHT = FSM[S].Out;  // set lights
+    LIGHT = FSM[S].TrafficSignal;  // set traffic signal
+		WALK = FSM[S].WalkSignal;				// set walk signal
     SysTick_Wait10ms(FSM[S].Time);
     Input = SENSOR;     // read sensors
     S = FSM[S].Next[Input];  
-		if (SENSOR&0x04){
-			WALK = 0x02;
-		}
-			else{
-			WALK = 0x08;
-		}
 		
   }
 }
