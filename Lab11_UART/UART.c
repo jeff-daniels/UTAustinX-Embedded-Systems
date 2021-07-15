@@ -123,7 +123,12 @@ char character;
 // Output: none
 void UART_OutString(unsigned char buffer[]){
 // as part of Lab 11 implement this function
-
+	int i = 0;
+	while(buffer[i]){
+		UART_OutChar(buffer[i]);
+		i++;
+	}
+	
 }
 
 unsigned char String[10];
@@ -140,6 +145,29 @@ unsigned char String[10];
 //10000 to "**** "  any value larger than 9999 converted to "**** "
 void UART_ConvertUDec(unsigned long n){
 // as part of Lab 11 implement this function
+	int i = 0;
+	for (i=9; i>=0; i--){
+		String[i]=0;			// Initialize String to all zeros
+	}
+	for (i=4; i>=0; i--){
+		String[i] = ' ';	// Initialize String[4-0] to five spaces
+	}
+	if (n>9999){
+		for(i=3; i>=0; i--){
+			String[i] = '*';	// if n greater than 9999 converted to "****"
+		}
+	}	else if (n==0) {
+		String[3] = '0';		// if n = 0, set the least significant digit to '0'
+	}	else {
+		for (i=3; i>=0; i--){
+			if (n==0){
+				break;
+			}
+			String[i] = n%10 + 0x30;
+			n = n/10;
+		}
+	}
+	
   
 }
 
@@ -166,7 +194,25 @@ void UART_OutUDec(unsigned long n){
 //10000 to "*.*** cm"  any value larger than 9999 converted to "*.*** cm"
 void UART_ConvertDistance(unsigned long n){
 // as part of Lab 11 implement this function
-  
+  	int i = 0;
+	for (i=9; i>=0; i--){
+		String[i]=0;			// Initialize String to all zeros
+	}
+	if (n>9999){
+		for(i=4; i>0; i--){
+			String[i] = '*';	// if n greater than 9999 converted to "****"
+		}
+	}
+	for (i=4; i>0; i--){
+		String[i] = n%10 + 0x30;	// get digits from least to most significant
+		n = n/10;
+	}
+	// fill out the rest of the string
+	String[0] = String[1];
+	String[1] = '.';
+	String[5] = ' ';
+	String[6] = 'c';
+	String[7] = 'm';
 }
 
 //-----------------------UART_OutDistance-----------------------
