@@ -202,11 +202,13 @@ void UART_ConvertDistance(unsigned long n){
 		for(i=4; i>0; i--){
 			String[i] = '*';	// if n greater than 9999 converted to "****"
 		}
-	}
-	for (i=4; i>0; i--){
-		String[i] = n%10 + 0x30;	// get digits from least to most significant
-		n = n/10;
-	}
+	} else {
+			for (i=4; i>0; i--){
+				String[i] = n%10 + 0x30;	// get digits from least to most significant
+				n = n/10;
+			}
+		}	
+	
 	// fill out the rest of the string
 	String[0] = String[1];
 	String[1] = '.';
