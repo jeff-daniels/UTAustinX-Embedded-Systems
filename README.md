@@ -7,7 +7,7 @@ Lab folders are found in C:\Keil\Labware
 
 [Lab 4: IO](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab4_IO/main.c) Debug a system with two inputs and two outputs.  If SW1 and SW2 are pressed, the LED is blue.  If just SW1 is pressed, the LED is red.  If just SW2 is pressed, the LED is green.  The LED is off if neither switch is pressed.  
 
-[Lab 5: FunctionsInC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab5_FunctionsInC/main.c): Write a C function and perform input/output on the serial port.  Computes the area of a rectangular room.  Input is the length and width of the room.  Output is the area of the room.  
+[Lab 5: FunctionsInC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab5_FunctionsInC/main.c): Write a C function and perform input/output on the serial port.  Computes the area of a rectangular room.  Input is the length and width of the room.  Output is the area of the room.  Uses the TExaSdisplay.exe program in the TExaSware folder to output on the real board.   
 
 [Lab 6: BranchingFunctionsDelays](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab6_BranchingFunctionsDelays/BranchingFunctionsDelays.c):  Write C software that inputs from a switch and toggles an LED output.  LED is toggled while the button is pressed, and is on when released.  
 
@@ -18,3 +18,5 @@ Lab folders are found in C:\Keil\Labware
 [Lab 9: FunctionalDebugging](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab9_FunctionalDebugging/main.c): Write C functions using array data structures that collect/debug your system.  System records its state everytime an input or output changes and stores this information in an array.  
 
 [Lab 10: TrafficLight](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab10_TrafficLight/TrafficLight.c): Interface 3 switches and 6 LEDs and create a traffic light finite state machine.  External switches detect traffic on two roads and a walk signal and serve as inputs.  Output to external and internal LEDs depend on the state of the system and the current input.  
+
+[Lab 11: UART](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab11_UART/UART.c): Software was written that converts numbers into ASCII strings on the display connected to UART0.  When debugging in the simulator you will observe output in the UART debugging window. When running on the real board you will run the terminal program TExaSdisplay.  
