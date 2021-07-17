@@ -12,7 +12,7 @@ This lab has these major objectives: 1) the understanding and implementing of in
 ## System Requirements
 In this lab you will make a square wave sound at 440 Hz, which is a standard frequency created by a tuning fork. You will interface a positive logic switch as the input, and you will interface the headphones as an output. The choices for input/output pins supported by the graders is listed in Tables 12.1 and 12.2. A resistor placed in series with the headphones will control the loudness of the sound, see Figure 12.1. Any value between 680 Ω and 2 kΩ will be OK. Selecting a larger the resistor will make the sound quieter. Please do not leave this resistor off entirely.
 
-![Hardware Interface]()  
+![Hardware Interface](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab12_TuningFork/Lab12image001.png)  
 
 *Figure 12.1. Possible hardware interface for Lab 12.*
 
@@ -23,14 +23,14 @@ The lab describes using PA3 for input and PA2 for output, but Tables 12.1 and 12
 
 *Table 12.1. Possible ports to interface the output (PA2 is default).*
 
-|Input|PA3||PB3|PE3|
+|Input|PA3|PB3|PE3|
 |-|-|-|-|  
 
 *Table 12.2. Possible ports to interface the input (PA3 is default).*
 
 Figure 12.2 illustrates the operation of the system. You will push the switch to start a quiet 440 Hz tone on the headphones. The sound should continue to be generated until you push the switch a second time. Each time you press the switch the sound should either start or stop.
 
-![Desired Behavior]()  
+![Desired Behavior](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab12_TuningFork/Lab12image002.png)  
 *Figure 12.2. Desired input/output behavior.*
 
 Notice the first time the switch is pressed the 440 Hz tone starts, the second time it is pressed the tone stops, the third time the switch is pressed, the tone starts again, and the fourth time stops the tone again.
