@@ -42,8 +42,26 @@ void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void WaitForInterrupt(void);  // low power mode
 
+
+
+
 // input from PA3, output from PA2, SysTick interrupts
-void Sound_Init(void){ 
+void Sound_Init(void){ unsigned long volatile delay;
+  SYSCTL_RCGC2_R |= 0x00000001; // activate port A
+  delay = SYSCTL_RCGC2_R;
+  GPIO_PORTA_AMSEL_R &= ~0x0C;      // no analog on PA3, PA2
+  GPIO_PORTA_PCTL_R &= ~0x0000FF00; // regular function on PA3, PA2
+  GPIO_PORTA_DIR_R &= ~0x08;			// make PA3 in
+	GPIO_PORTA_DIR_R |= 0x04;     // make PA2 out
+  GPIO_PORTA_DR8R_R |= 0x04;    // can drive up to 8mA PA2 output
+  GPIO_PORTA_AFSEL_R &= ~0x0C;  // disable alt funct on PA3, PA2
+  GPIO_PORTA_DEN_R |= 0x0C;     // enable digital I/O on PA3, PA2
+  NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
+  NVIC_ST_RELOAD_R = 90908;     // reload value for 880hz (2 x desired freq) (assuming 80MHz)
+  NVIC_ST_CURRENT_R = 0;        // any write to current clears it
+  NVIC_SYS_PRI3_R = NVIC_SYS_PRI3_R&0x00FFFFFF; // priority 0                
+  NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
+  EnableInterrupts();
 
 }
 
