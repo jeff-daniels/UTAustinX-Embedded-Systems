@@ -91,14 +91,29 @@ void Sound_Init(void){ unsigned long volatile delay;
   NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
 }
 
+
+
 unsigned long CurrentState;		// index to current state
-unsigned long test;
+// FSM Handler works on real board but not the simulation grader :(
 // called at 880 Hz
-void SysTick_Handler(void){
+void FSM_SysTick_Handler(void){
 	TUNING_FORK = FSM[CurrentState].Buzzer;	// Set PA2 to either high or low
 	CurrentState = FSM[CurrentState].Next[(SWITCH&0x08)>>3];	// PA3 input determines next state
 }
 
+unsigned long currSwitch; // State of the switch
+unsigned long prevSwitch; // Previous state of the switch
+// called at 880 Hz
+void SysTick_Handler(void){
+	// Oscillate the signal at 880 Hz if switch is pressed, else output low
+	if((prevSwitch == 0x00 && SWITCH != 0x00) || (prevSwitch != 0x00 && SWITCH == 0x00))
+		currSwitch ^= 0x08; // Toggle current state
+		prevSwitch = currSwitch; // set previous state to current state
+	if(currSwitch != 0x00)
+		TUNING_FORK ^= 0x04; 	// Turn on buzzer
+	else
+		TUNING_FORK = 0x00; // Turn off buzzer
+}
 
 int main(void){// activate grader and set system clock to 80 MHz
   DisableInterrupts();	// disable interrupts before initialization
@@ -106,7 +121,8 @@ int main(void){// activate grader and set system clock to 80 MHz
   Sound_Init();         
   EnableInterrupts();   // enable after all initialization are done
 	CurrentState = Off;		// initial and typical state
-	
+	prevSwitch = 0x00;
+	currSwitch = 0x00;
   while(1){
     // main program is free to perform other tasks
     // do not use WaitForInterrupt() here, it may cause the TExaS to crash
