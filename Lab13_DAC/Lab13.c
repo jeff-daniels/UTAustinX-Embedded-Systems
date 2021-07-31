@@ -8,6 +8,7 @@
 // Port E bits 3-0 have 4 piano keys
 
 #include "..//tm4c123gh6pm.h"
+#include "DAC.h"
 #include "Sound.h"
 #include "Piano.h"
 #include "TExaS.h"
@@ -16,14 +17,27 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void delay(unsigned long msec);
-int main(void){ // Real Lab13 
+int main(void){unsigned long i;
+	// Real Lab13 
 	// for the real board grader to work 
 	// you must connect PD3 to your DAC output
   TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210,ScopeOn); // activate grader and set system clock to 80 MHz
 // PortE used for piano keys, PortB used for DAC        
   Sound_Init(); // initialize SysTick timer and DAC
   Piano_Init();
+	DAC_Init();
   EnableInterrupts();  // enable after all initialization are done
+	// Initial testing, law of superposition
+  DAC_Out(1);
+  DAC_Out(2);
+  DAC_Out(4);
+	DAC_Out(8);
+	DAC_Out(15);
+	
+	// static testing, single step and record Vout
+  for(i=0;i<16;i++){
+    DAC_Out(i);
+  }
   while(1){                
 // input from keys to select tone
 
