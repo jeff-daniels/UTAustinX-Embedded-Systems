@@ -23,7 +23,7 @@ Press UP to enter the speed menu then use the UP and DOWN arrow keys to navigate
 Click on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level.
 Maximum Volume.
 
-![DAC]
+![DAC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab13_DAC/Lab13image001.png)  
 *Figure 13.1. DAC allows the software to create music. In the simulator mode, the output voltage Vout is called DACOUT.*
 
 The second step is to design a low-level device driver for the DAC. Remember, the goal of a device driver is to separate what the device does from how it works. “What it does” means the general descriptions and function prototypes of DAC_Init and DAC_Out that are placed in DAC.h. “How it works” means the implementations of DAC_Init and DAC_Out that will be placed in DAC.c.
