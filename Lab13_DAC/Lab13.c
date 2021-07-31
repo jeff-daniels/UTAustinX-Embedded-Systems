@@ -17,7 +17,7 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void delay(unsigned long msec);
-int main(void){unsigned long i;
+int main(void){unsigned long i, input;
 	// Real Lab13 
 	// for the real board grader to work 
 	// you must connect PD3 to your DAC output
@@ -40,7 +40,7 @@ int main(void){unsigned long i;
   }
   while(1){                
 // input from keys to select tone
-
+	input = Piano_In()&0x0F;
   }
             
 }
