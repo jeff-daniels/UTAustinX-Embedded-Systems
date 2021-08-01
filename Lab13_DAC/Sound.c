@@ -15,7 +15,7 @@ const int SineWave[64] = // Sine wave ranging from 0 to 15 for 4 bit DAC
 	{8,8,9,10,10,11,12,12,13,13,14,14,14,15,15,15, 15,15,15,15,14,14,14,13,13,12,12,
 		11,10,10,9,8,8,7,6,5,5,4,3,3,2,2,1,1,1,0,0,0,0,0,0,0,1,1,1,2,2,3,3,4,5,5,6,7};
 unsigned char Index = 0;	// index between 0 and 63
-unsigned char Silent = 0;	// whether or not the speaker is silent
+unsigned char Silent = 1;	// whether or not the speaker is silent
 
 // **************Sound_Init*********************
 // Initialize Systick periodic interrupts
@@ -39,8 +39,15 @@ void Sound_Init(void){
 //           Minimum is determined by length of ISR
 // Output: none
 void Sound_Tone(unsigned long period){
+// RELOAD is changed only when period changes
+	if (NVIC_ST_RELOAD_R == period-1) return;		// SysTick continues to run
+	
 // this routine sets the RELOAD and starts SysTick
+	Silent = 0;
+	Index = 0;
+	
 	NVIC_ST_CTRL_R = 0;								// disable SysTick during setup
+	NVIC_ST_CURRENT_R = 0;          	// any write to current clears it
 	NVIC_ST_RELOAD_R = period-1;			// rewrite reload value
 	NVIC_ST_CTRL_R = 0x0007; // enable,core clock, and interrupts
 }
@@ -60,9 +67,11 @@ void Sound_Off(void){
 // Executed every 12.5ns*(period)
 void SysTick_Handler(void){
 	if(!Silent){
-		GPIO_PORTF_DATA_R ^= 0X08;	// toggle PF3, debugging
 		DAC_Out(SineWave[Index]);	// output one sine wave value per interrupt
 		Index = (Index+1)&0x3F;		// increment index and cycle through 0-63
-		
+	}
+	else{
+		DAC_Out(0);
 	}
 }
+
