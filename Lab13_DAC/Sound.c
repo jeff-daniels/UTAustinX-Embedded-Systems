@@ -16,7 +16,12 @@
 // Input: none
 // Output: none
 void Sound_Init(void){
-  
+  DAC_Init();										// PB3-PB0 is DAC_out
+	NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
+  NVIC_ST_RELOAD_R = 0;     		// reload value 
+  NVIC_ST_CURRENT_R = 0;        // any write to current clears it
+  NVIC_SYS_PRI3_R = NVIC_SYS_PRI3_R&0x00FFFFFF; // priority 0                
+  NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
 }
 
 // **************Sound_Tone*********************
