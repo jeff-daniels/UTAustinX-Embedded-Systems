@@ -32,12 +32,5 @@ void Piano_Init(void){volatile unsigned long delay;
 // 0x01 is key 0 pressed, 0x02 is key 1 pressed,
 // 0x04 is key 2 pressed, 0x08 is key 3 pressed
 unsigned long Piano_In(void){unsigned long keyPressed;
-	keyPressed = GPIO_PORTE_DATA_R&0x0F; // input
-
-	if (((keyPressed)&(keyPressed - 1)) == 0){
-		return 0x00;	// multiple keys pressed returns 0
-	} 
-	else{
-		return keyPressed; // input
-	}
+	return GPIO_PORTE_DATA_R&0x0F; // input
 }

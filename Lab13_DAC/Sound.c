@@ -59,6 +59,7 @@ void Sound_Tone(unsigned long period){
 void Sound_Off(void){
  // this routine stops the sound output
 	Silent = 1;
+	Sound_Tone(0);
 	DAC_Out(0);
 }
 

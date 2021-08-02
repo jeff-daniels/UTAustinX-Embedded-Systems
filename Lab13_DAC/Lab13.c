@@ -17,7 +17,7 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void delay(unsigned long msec);
-int main(void){unsigned long i, input;
+int main(void){unsigned long i, KeyPressed;
 	// Real Lab13 
 	// for the real board grader to work 
 	// you must connect PD3 to your DAC output
@@ -27,20 +27,35 @@ int main(void){unsigned long i, input;
   Piano_Init();
 	DAC_Init();
   EnableInterrupts();  // enable after all initialization are done
+	
 	// Initial testing, law of superposition
   DAC_Out(1);
   DAC_Out(2);
   DAC_Out(4);
 	DAC_Out(8);
+	DAC_Out(16);
 	DAC_Out(15);
+	DAC_Out(0);
 	
 	// static testing, single step and record Vout
   for(i=0;i<16;i++){
     DAC_Out(i);
   }
+	Sound_Off();
+	
   while(1){                
-// input from keys to select tone
-	input = Piano_In()&0x0F;
+		// input from keys to select tone
+		KeyPressed = Piano_In();
+		
+		switch (KeyPressed) {
+			case SILENCE:	Sound_Off(); break;
+			case C0_KEY:	Sound_Tone(C0_PERIOD); break;
+			case D_KEY:	Sound_Tone(D_PERIOD); break;
+			case E_KEY:	Sound_Tone(E_PERIOD); break;
+			case G_KEY:	Sound_Tone(G_PERIOD); break;
+			default:		Sound_Off(); break;	// Silence is preferred
+		}
+		
   }
             
 }

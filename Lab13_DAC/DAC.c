@@ -30,5 +30,5 @@ void DAC_Init(void){unsigned long volatile delay;
 // Input: 4-bit data, 0 to 15 
 // Output: none
 void DAC_Out(unsigned long data){
-  GPIO_PORTB_DATA_R |= data&0x0F;
+  GPIO_PORTB_DATA_R = data&0x0F;
 }

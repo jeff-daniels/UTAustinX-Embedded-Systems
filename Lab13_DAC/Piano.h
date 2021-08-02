@@ -5,6 +5,22 @@
 // Daniel Valvano, Jonathan Valvano
 // December 29, 2014
 
+
+// Define the keys 
+#define G_KEY		0x08 	// PB3
+#define E_KEY		0x04	// PB2
+#define D_KEY		0x02	// PB1
+#define C0_KEY	0x01	// PB0
+#define SILENCE 0x00	// No keys pressed
+
+// the 64 comes from the length of the sine wave table
+// bus is 80 MHz
+// Period =  80000000/64/Freq=1250000/Freq
+#define G_PERIOD   1594   // 784 Hz
+#define E_PERIOD   1896   // 659.3 Hz
+#define D_PERIOD   2128   // 587.3 Hz
+#define C0_PERIOD  2389   // 523.3 Hz
+
 // **************Piano_Init*********************
 // Initialize piano key inputs
 // Input: none
