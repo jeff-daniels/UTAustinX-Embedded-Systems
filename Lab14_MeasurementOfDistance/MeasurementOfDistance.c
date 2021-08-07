@@ -51,7 +51,7 @@ unsigned long Flag;       // 1 means valid Distance, 0 means Distance is empty
 // Input: sample  12-bit ADC sample
 // Output: 32-bit distance (resolution 0.001cm)
 unsigned long Convert(unsigned long sample){
-  return sample/4095.0 * Size * 1000;  // replace this line with real code
+  return sample/4095.0 * Size * 1000 + 1;  // replace this line with real code
 }
 
 //-----------------------UART_ConvertDistance-----------------------
@@ -101,7 +101,7 @@ void SysTick_Init(unsigned long period){
 // executes every 25 ms, collects a sample, converts and stores in mailbox
 void SysTick_Handler(void){ 
   // Reads ADC & store in mailbox w/ flag
-	Distance = Convert(ADC0_In())+1;
+	Distance = Convert(ADC0_In());
 	UART_ConvertDistance(Distance);
 	Flag = 1;
 }
