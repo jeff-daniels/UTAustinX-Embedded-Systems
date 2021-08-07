@@ -54,19 +54,6 @@ unsigned long Convert(unsigned long sample){
   return sample/4095.0 * Size * 1000;  // replace this line with real code
 }
 
-// Initialize SysTick interrupts to trigger at 40 Hz, 25 ms
-void SysTick_Init(unsigned long period){
-  NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
-  NVIC_ST_RELOAD_R = 90908;     // reload value for 880hz (2 x desired freq) (assuming 80MHz)
-  NVIC_ST_CURRENT_R = 0;        // any write to current clears it
-  NVIC_SYS_PRI3_R = NVIC_SYS_PRI3_R&0x00FFFFFF; // priority 0                
-  NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
-}
-// executes every 25 ms, collects a sample, converts and stores in mailbox
-void SysTick_Handler(void){ 
-  
-}
-
 //-----------------------UART_ConvertDistance-----------------------
 // Converts a 32-bit distance into an ASCII string
 // Input: 32-bit number to be converted (resolution 0.001cm)
@@ -103,6 +90,34 @@ void UART_ConvertDistance(unsigned long n){
 	String[7] = 'm';
 }
 
+// Initialize SysTick interrupts to trigger at 40 Hz, 25 ms
+void SysTick_Init(unsigned long period){
+  NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
+  NVIC_ST_RELOAD_R = period -1; // reload value
+  NVIC_ST_CURRENT_R = 0;        // any write to current clears it
+  NVIC_SYS_PRI3_R = NVIC_SYS_PRI3_R&0x00FFFFFF; // priority 0                
+  NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
+}
+// executes every 25 ms, collects a sample, converts and stores in mailbox
+void SysTick_Handler(void){ 
+  // Reads ADC & store in mailbox w/ flag
+	Distance = Convert(ADC0_In())+1;
+	UART_ConvertDistance(Distance);
+	Flag = 1;
+}
+
+void PortF_Init(void){unsigned long volatile delay;
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF; // activate port F
+  delay = SYSCTL_RCGC2_R;
+  GPIO_PORTF_DIR_R |= 0x04;             // make PF2 out (built-in LED)
+  GPIO_PORTF_AFSEL_R &= ~0x04;          // disable alt funct on PF2
+  GPIO_PORTF_DEN_R |= 0x04;             // enable digital I/O on PF2
+                                        // configure PF2 as GPIO
+  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF0FF)+0x00000000;
+  GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
+}
+
+
 // main1 is a simple main program allowing you to debug the ADC interface
 int main1(void){ 
   TExaS_Init(ADC0_AIN1_PIN_PE2, UART0_Emulate_Nokia5110_NoScope);
@@ -113,7 +128,7 @@ int main1(void){
   }
 }
 // once the ADC is operational, you can use main2 to debug the convert to distance
-int main(void){ 
+int main2(void){ 
   TExaS_Init(ADC0_AIN1_PIN_PE2, UART0_Emulate_Nokia5110_NoScope);
   ADC0_Init();    // initialize ADC0, channel 1, sequencer 3
   Nokia5110_Init();             // initialize Nokia5110 LCD
@@ -128,18 +143,18 @@ int main(void){
 }
 // once the ADC and convert to distance functions are operational,
 // you should use this main to build the final solution with interrupts and mailbox
-int main0(void){ 
+int main(void){ 
   TExaS_Init(ADC0_AIN1_PIN_PE2, UART0_Emulate_Nokia5110_NoScope);
-
-// initialize ADC0, channel 1, sequencer 3
-// initialize Nokia5110 LCD (optional)
-// initialize SysTick for 40 Hz interrupts
-// initialize profiling on PF1 (optional)
-
-  EnableInterrupts();
+  ADC0_Init();    			  // initialize ADC0, channel 1, sequencer 3
+  SysTick_Init(2000000);	// Initialize SysTick interrupts to trigger at 40 Hz, 25 ms, 80 MHz clock
+	Nokia5110_Init();       // initialize Nokia5110 LCD
+	PortF_Init();						// initialize profiling on PF1 (optional)
+	EnableInterrupts();
 // print a welcome message  (optional)
   while(1){ 
-// read mailbox
-// output to Nokia5110 LCD (optional)
+		if (Flag == 1) {
+			Nokia5110_SetCursor(0, 0);
+			Nokia5110_OutString(String);    // output to Nokia5110 LCD (optional)
+		}
   }
 }
