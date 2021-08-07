@@ -38,6 +38,7 @@ void EnableInterrupts(void);  // Enable interrupts
 
 unsigned char String[10]; // null-terminated ASCII string
 unsigned long Distance;   // units 0.001 cm
+unsigned long Size = 2;		// range of slide potentiometer (cm)
 unsigned long ADCdata;    // 12-bit 0 to 4095 sample
 unsigned long Flag;       // 1 means valid Distance, 0 means Distance is empty
 
@@ -50,12 +51,16 @@ unsigned long Flag;       // 1 means valid Distance, 0 means Distance is empty
 // Input: sample  12-bit ADC sample
 // Output: 32-bit distance (resolution 0.001cm)
 unsigned long Convert(unsigned long sample){
-  return 0;  // replace this line with real code
+  return sample/4095.0 * Size * 1000;  // replace this line with real code
 }
 
 // Initialize SysTick interrupts to trigger at 40 Hz, 25 ms
 void SysTick_Init(unsigned long period){
-  
+  NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
+  NVIC_ST_RELOAD_R = 90908;     // reload value for 880hz (2 x desired freq) (assuming 80MHz)
+  NVIC_ST_CURRENT_R = 0;        // any write to current clears it
+  NVIC_SYS_PRI3_R = NVIC_SYS_PRI3_R&0x00FFFFFF; // priority 0                
+  NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
 }
 // executes every 25 ms, collects a sample, converts and stores in mailbox
 void SysTick_Handler(void){ 
@@ -75,7 +80,27 @@ void SysTick_Handler(void){
 //10000 to "*.*** cm"  any value larger than 9999 converted to "*.*** cm"
 void UART_ConvertDistance(unsigned long n){
 // as part of Lab 11 you implemented this function
- 
+  int i = 0;
+	for (i=9; i>=0; i--){
+		String[i]=0;			// Initialize String to all zeros
+	}
+	if (n>9999){
+		for(i=4; i>0; i--){
+			String[i] = '*';	// if n greater than 9999 converted to "****"
+		}
+	} else {
+			for (i=4; i>0; i--){
+				String[i] = n%10 + 0x30;	// get digits from least to most significant
+				n = n/10;
+			}
+		}	
+	
+	// fill out the rest of the string
+	String[0] = String[1];
+	String[1] = '.';
+	String[5] = ' ';
+	String[6] = 'c';
+	String[7] = 'm';
 }
 
 // main1 is a simple main program allowing you to debug the ADC interface
@@ -88,7 +113,7 @@ int main1(void){
   }
 }
 // once the ADC is operational, you can use main2 to debug the convert to distance
-int main2(void){ 
+int main(void){ 
   TExaS_Init(ADC0_AIN1_PIN_PE2, UART0_Emulate_Nokia5110_NoScope);
   ADC0_Init();    // initialize ADC0, channel 1, sequencer 3
   Nokia5110_Init();             // initialize Nokia5110 LCD
@@ -103,7 +128,7 @@ int main2(void){
 }
 // once the ADC and convert to distance functions are operational,
 // you should use this main to build the final solution with interrupts and mailbox
-int main(void){ 
+int main0(void){ 
   TExaS_Init(ADC0_AIN1_PIN_PE2, UART0_Emulate_Nokia5110_NoScope);
 
 // initialize ADC0, channel 1, sequencer 3
