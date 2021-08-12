@@ -38,7 +38,7 @@ There is a psychology for developing games that are fun to play. Fun games are e
 
 Have fun with this lab. This is a photo of the Lab 15 submission from Chris Long, April 2016.
 
-![Submission Photo]()
+![Submission Photo](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab15_SpaceInvaders/Lab15.jpg)
 
 Videos and descriptions of these four examples were presented back in Section 15.1
 
