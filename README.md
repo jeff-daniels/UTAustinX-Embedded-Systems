@@ -23,4 +23,6 @@ Lab folders are found in C:\Keil\Labware
 
 [Lab 12: TuningFork](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab12_TuningFork/TuningFork.c): SysTick interrupts were used to create a 440Hz tone on a buzzer or phone plug output.  A switch was interfaced to set the state of the system which is initially off.  When the switch is pressed, the buzzer outputs the tone.  When the switch is released, the tone continues to play and if the switch is pressed again, the tone shuts off.  A finite state machine structure was used.
 
-[Lab 13: DAC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab13_DAC/Lab13.c) Digital to Analoy Conversion was implemented by playing portions of a sine wave during SysTick interrupts.  A "Piano" was constructed with four keys acting as inputs with the microcontroller outputting a waveform corresponding to sine waves occurring at a four different musical notes.  A DAC was created and drivers for making sounds and getting key inputs were written.
+[Lab 13: DAC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab13_DAC/Lab13.c) Digital to Analog Conversion was implemented by playing portions of a sine wave during SysTick interrupts.  A "Piano" was constructed with four keys acting as inputs with the microcontroller outputting a waveform corresponding to sine waves occurring at a four different musical notes.  A DAC was created and drivers for making sounds and getting key inputs were written.  
+
+[Lab 14:]() 
