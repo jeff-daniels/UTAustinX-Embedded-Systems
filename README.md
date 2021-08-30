@@ -25,4 +25,4 @@ Lab folders are found in C:\Keil\Labware
 
 [Lab 13: DAC](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab13_DAC/Lab13.c) Digital to Analog Conversion was implemented by playing portions of a sine wave during SysTick interrupts.  A "Piano" was constructed with four keys acting as inputs with the microcontroller outputting a waveform corresponding to sine waves occurring at a four different musical notes.  A DAC was created and drivers for making sounds and getting key inputs were written.  
 
-[Lab 14:]() 
+[Lab 14: MeasurementOfDistance](https://github.com/jeff-daniels/UTAustinX-Embedded-Systems/blob/main/Lab14_MeasurementOfDistance/MeasurementOfDistance.c)  Analog to Digital Conversion was implemented by converting the position of a slide potentiometer into an on-screen output of the distance from the origin.  An interupt-driven real-time sampling device driver was developed
