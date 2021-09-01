@@ -43,10 +43,10 @@
 
 // Linked data structure
 struct State {
-  unsigned long TrafficSignal;
-	unsigned long WalkSignal;
-  unsigned long Time;  
-  unsigned long Next[8];}; 
+  unsigned long TrafficSignal;	// Bits 5-3 West: red yellow green, Bits 2-0 South: red yellow green
+	unsigned long WalkSignal;			// Bit 2 green , bit 1 red 
+  unsigned long Time;  					// delay in 10ms units
+  unsigned long Next[8];}; 			// next state for 3 bit input
 typedef const struct State STyp;
 
 // Data Transition Table for operating the lights 
@@ -119,7 +119,6 @@ int main(void){
 		WALK = FSM[S].WalkSignal;				// set walk signal
 		SysTick_Wait10ms(FSM[S].Time);	// delay
 		S = FSM[S].Next[SENSOR];  // read sensors to determine next state
-		
 	}
 }
 
